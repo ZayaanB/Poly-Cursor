@@ -1,0 +1,117 @@
+{
+  "project_name": "Poly-Cursor",
+  "directories_to_create": [
+    "programs/prediction_market",
+    "programs/nft_tokenizer",
+    "programs/registry",
+    "app/src/components",
+    "app/src/hooks",
+    "app/src/lib",
+    "app/src/pages",
+    "app/src/styles",
+    "app/public",
+    "scripts/local",
+    "scripts/deploy",
+    "scripts/test",
+    "deployment",
+    "backend/api",
+    "backend/core",
+    "backend/models"
+  ],
+  "rust_agent_tasks": [
+    {
+      "file_path": "programs/prediction_market/Cargo.toml",
+      "instructions": "Create Anchor program manifest. Add prediction_market as workspace member. Set anchor-lang and anchor-spl dependencies with latest versions."
+    },
+    {
+      "file_path": "programs/prediction_market/src/lib.rs",
+      "instructions": "Implement Anchor program declaring prediction market module. Include: initialize_market, create_outcome, place_bet, resolve_market, claim_winnings. Use latest Anchor macros and error handling patterns. Add PDA seeds for market, outcome, and bet accounts."
+    },
+    {
+      "file_path": "programs/prediction_market/src/state.rs",
+      "instructions": "Define market, outcome, and bet account structs with proper Anchor #[account] attributes. Include creation_ts, resolution_ts, total_stake, resolved flag. Use u64 for amounts, Pubkey for authority and oracle."
+    },
+    {
+      "file_path": "programs/nft_tokenizer/Cargo.toml",
+      "instructions": "Create Anchor program manifest for NFT tokenizer. Add mpl-token-metadata as optional dependency. Ensure anchor-lang compatibility."
+    },
+    {
+      "file_path": "programs/nft_tokenizer/src/lib.rs",
+      "instructions": "Implement NFT tokenizer program. Include: create_collection, mint_nft, fractionalize, merge_fractions. Use Metaplex Token Metadata standard. PDA seeds for collection, mint, and fraction vault."
+    },
+    {
+      "file_path": "programs/nft_tokenizer/src/state.rs",
+      "instructions": "Define collection, nft_mint, and fraction_vault account structs. Include metadata uri, supply, royalty_bps. Derive BorshSerialize/Deserialize for all state."
+    },
+    {
+      "file_path": "programs/registry/Cargo.toml",
+      "instructions": "Create minimal Anchor registry program. Used for indexing deployed programs and markets. Lightweight manifest."
+    },
+    {
+      "file_path": "programs/registry/src/lib.rs",
+      "instructions": "Implement registry program: register_program, register_market, list_programs. Single global registry account with vector of program/market info. PDA for registry authority."
+    },
+    {
+      "file_path": "Anchor.toml",
+      "instructions": "Root Anchor workspace. Declare programs: prediction_market, nft_tokenizer, registry. Set [provider] cluster to localnet/devnet. Add [scripts] for local deployment. Linux Mint compatible paths."
+    }
+  ],
+  "frontend_agent_tasks": [
+    {
+      "file_path": "app/package.json",
+      "instructions": "Create Next.js app with TypeScript. Dependencies: next, react, @solana/wallet-adapter-react, @solana/wallet-adapter-react-ui, @solana/wallet-adapter-wallets, @solana/web3.js, @coral-xyz/anchor, tailwindcss. Dev deps: typescript, @types/node, @types/react."
+    },
+    {
+      "file_path": "app/src/lib/wallet.tsx",
+      "instructions": "Create WalletProvider wrapper using @solana/wallet-adapter-react. Wrap with WalletModalProvider. Support Phantom, Solflare, Backpack. Configure for devnet and mainnet. Export useWallet, useConnection hooks."
+    },
+    {
+      "file_path": "app/src/lib/anchor-client.ts",
+      "instructions": "Create Anchor Program client factory. Load IDL from public folder. Accept programId and connection. Export typed program instances for prediction_market and nft_tokenizer."
+    },
+    {
+      "file_path": "app/src/pages/index.tsx",
+      "instructions": "Landing page with wallet connect, quick links to Prediction Markets and NFT Tokenizer. Use Tailwind. Responsive layout. Show connection status and wallet balance."
+    },
+    {
+      "file_path": "app/src/pages/prediction-markets.tsx",
+      "instructions": "Prediction markets dashboard. List active markets, create market form, place bet modal. Use Anchor client for prediction_market program. Display odds, volume, resolution status."
+    },
+    {
+      "file_path": "app/src/pages/nft-tokenizer.tsx",
+      "instructions": "NFT tokenizer UI. Upload metadata, mint NFT, fractionalize flow. Integrate with nft_tokenizer program. Show collection gallery and fraction balances."
+    },
+    {
+      "file_path": "app/src/components/Navbar.tsx",
+      "instructions": "Navigation bar with wallet adapter button, links to /, /prediction-markets, /nft-tokenizer. Use WalletMultiButton from @solana/wallet-adapter-react-ui."
+    },
+    {
+      "file_path": "app/src/styles/globals.css",
+      "instructions": "Tailwind base, components, utilities. Custom theme for Solana purple accent. Dark mode optional."
+    },
+    {
+      "file_path": "app/next.config.js",
+      "instructions": "Next.js config. Enable standalone output for Docker. Add webpack config for @solana packages if needed."
+    },
+    {
+      "file_path": "app/tailwind.config.js",
+      "instructions": "Tailwind v3 config. Content paths: ./src/**/*.{js,ts,jsx,tsx}. Extend colors with Solana brand palette."
+    },
+    {
+      "file_path": "scripts/local/start-validator.sh",
+      "instructions": "Bash script to start local Solana validator. Use solana-test-validator. Pre-load programs if available. Optimized for Linux Mint. Log to ./logs/validator.log."
+    },
+    {
+      "file_path": "scripts/deploy/deploy-all.sh",
+      "instructions": "Deploy all Anchor programs to devnet/mainnet. Accept --cluster arg. Run anchor build, anchor deploy. Save program IDs to .env or config. Linux Mint compatible."
+    },
+    {
+      "file_path": "deployment/Dockerfile",
+      "instructions": "Multi-stage Dockerfile. Stage 1: build Next.js app (npm run build). Stage 2: nginx or node to serve. Expose 3000. Optimized for Vultr. Minimal base image."
+    },
+    {
+      "file_path": "deployment/docker-compose.yml",
+      "instructions": "Docker Compose for Vultr deployment. Services: app (Next.js), optionally backend (FastAPI). Use env_file for RPC_URL, program IDs. Health checks. Restart policy."
+    }
+  ]
+}
