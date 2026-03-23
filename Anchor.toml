@@ -1,0 +1,14 @@
+[features]
+resolution = "Custom"
+seccomp = true
+
+[programs.localnet]
+prediction_market = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
