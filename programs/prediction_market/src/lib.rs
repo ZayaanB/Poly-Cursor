@@ -70,22 +70,14 @@ pub mod prediction_market {
             .checked_add(amount)
             .ok_or(PredictionMarketError::MathOverflow)?;
 
-        let seeds = &[
-            b"market",
-            market.authority.as_ref(),
-            &[market.bump],
-        ][..];
-        let signer = &[&seeds[..]];
-
         token::transfer(
-            CpiContext::new_with_signer(
+            CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
                 Transfer {
                     from: ctx.accounts.user_token.to_account_info(),
                     to: ctx.accounts.vault.to_account_info(),
-                    authority: ctx.accounts.market.to_account_info(),
+                    authority: ctx.accounts.user.to_account_info(),
                 },
-                signer,
             ),
             amount,
         )?;
