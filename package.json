@@ -1,0 +1,47 @@
+{
+  "name": "poly-cursor",
+  "displayName": "Poly-Cursor",
+  "description": "Agentic Solana IDE — Poly-Cursor chat panel",
+  "version": "0.1.0",
+  "publisher": "poly-cursor",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onView:polyCursor.chatView"],
+  "main": "./out/extension.js",
+  "files": ["out", "media", "webview-ui/dist"],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "polyCursor",
+          "title": "Poly-Cursor",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "polyCursor": [
+        {
+          "type": "webview",
+          "id": "polyCursor.chatView",
+          "name": "Chat"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "webview:build": "npm run build --prefix webview-ui",
+    "webview:install": "npm install --prefix webview-ui",
+    "package": "npm run webview:build && npm run compile && vsce package",
+    "vscode:prepublish": "npm run webview:build && npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.5.0"
+  }
+}

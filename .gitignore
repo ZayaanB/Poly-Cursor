@@ -9,6 +9,8 @@ dist/
 build/
 .next/
 .anchor/
+out/
+webview-ui/dist/
 
 # Environment
 .env
@@ -17,7 +19,6 @@ build/
 
 # IDE
 .idea/
-.vscode/
 *.swp
 *.swo
 
