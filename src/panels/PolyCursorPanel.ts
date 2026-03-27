@@ -1,16 +1,29 @@
 import * as vscode from "vscode";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { scaffoldWorkspaceFiles } from "../workspace/scaffoldWorkspace";
 
 /** Messages sent from the webview (React) to the extension host. */
 export type WebviewToExtensionMessage =
   | { type: "ready" }
-  | { type: "sendMessage"; text: string; id: string };
+  | { type: "sendMessage"; text: string; id: string }
+  | {
+      type: "applyToWorkspace";
+      requestId: string;
+      files: Array<{ relativePath: string; content: string }>;
+    };
 
 /** Messages sent from the extension host to the webview. */
 export type ExtensionToWebviewMessage =
   | { type: "appendAssistantChunk"; text: string }
-  | { type: "setProcessing"; value: boolean };
+  | { type: "setProcessing"; value: boolean }
+  | {
+      type: "scaffoldResult";
+      requestId: string;
+      ok: boolean;
+      message: string;
+      writtenPaths?: string[];
+    };
 
 /**
  * Provides the Poly-Cursor chat webview (Vite-built React UI).
@@ -52,7 +65,7 @@ export class PolyCursorPanel implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage((raw: unknown) => {
       if (!isWebviewToExtensionMessage(raw)) return;
-      this._handleWebviewMessage(raw);
+      void this._handleWebviewMessage(raw);
     });
   }
 
@@ -61,29 +74,34 @@ export class PolyCursorPanel implements vscode.WebviewViewProvider {
     void this._view?.webview.postMessage(message);
   }
 
-  private _handleWebviewMessage(message: WebviewToExtensionMessage): void {
+  private async _handleWebviewMessage(
+    message: WebviewToExtensionMessage
+  ): Promise<void> {
     switch (message.type) {
       case "ready":
         vscode.window.setStatusBarMessage("Poly-Cursor chat ready", 2000);
         return;
-      case "sendMessage": {
-        void this._simulateAgentReply(message.text);
+      case "sendMessage":
+        return;
+      case "applyToWorkspace": {
+        const result = await scaffoldWorkspaceFiles(message.files);
+        this.postToWebview({
+          type: "scaffoldResult",
+          requestId: message.requestId,
+          ok: result.ok,
+          message: result.message,
+          writtenPaths: result.writtenPaths,
+        });
+        if (result.ok) {
+          vscode.window.showInformationMessage(result.message);
+        } else {
+          vscode.window.showErrorMessage(result.message);
+        }
         return;
       }
+      default:
+        return;
     }
-  }
-
-  /** Demo pipeline: show analyzing state, then stream a short reply. */
-  private async _simulateAgentReply(userText: string): Promise<void> {
-    this.postToWebview({ type: "setProcessing", value: true });
-    await this._delay(1200);
-    this.postToWebview({ type: "setProcessing", value: false });
-    const reply = `You said: “${userText.slice(0, 200)}”. (Extension demo — wire your agent here.)`;
-    this.postToWebview({ type: "appendAssistantChunk", text: reply });
-  }
-
-  private _delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -136,7 +154,7 @@ export class PolyCursorPanel implements vscode.WebviewViewProvider {
       `script-src ${webview.cspSource}`,
       `font-src ${webview.cspSource}`,
       `img-src ${webview.cspSource} https: data:`,
-      `connect-src ${webview.cspSource} https:`,
+      `connect-src ${webview.cspSource} http://localhost:8000 http://127.0.0.1:8000 https:`,
     ].join("; ");
 
     const meta = `<meta http-equiv="Content-Security-Policy" content="${csp}">`;
@@ -169,6 +187,16 @@ function isWebviewToExtensionMessage(
     typeof o.id === "string"
   ) {
     return true;
+  }
+  if (o.type === "applyToWorkspace" && typeof o.requestId === "string") {
+    if (!Array.isArray(o.files)) return false;
+    return o.files.every(
+      (f) =>
+        f &&
+        typeof f === "object" &&
+        typeof (f as { relativePath?: unknown }).relativePath === "string" &&
+        typeof (f as { content?: unknown }).content === "string"
+    );
   }
   return false;
 }
