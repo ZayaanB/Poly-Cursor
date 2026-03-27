@@ -1,73 +1,75 @@
 # Poly-Cursor
 
-An agentic IDE for Solana development, specializing in Polymarket-style prediction markets and NFT tokenizers.
+An agentic IDE extension for Solana development, specializing in Polymarket-style prediction markets and NFT tokenizers.
 
 ## Features
 
-- **Prediction Markets** — Create, trade, and resolve markets with on-chain settlement
-- **NFT Tokenizer** — Mint, fractionalize, and manage NFT collections with Metaplex
-- **Registry** — Index and discover deployed programs and markets
-- **Next.js Frontend** — Wallet integration, market dashboards, and tokenizer UI
-- **Docker Deployment** — Production-ready configuration for Vultr and cloud providers
+* Prediction Markets: Create, trade, and resolve markets with on-chain settlement.
+* NFT Tokenizer: Mint, fractionalize, and manage NFT collections with Metaplex.
+* Native IDE Integration: Runs directly inside VS Code or Cursor as an extension.
+* Real-Time Generation: Streams generated Rust and Next.js code directly into the workspace via Server-Sent Events.
+* Docker Deployment: Production-ready configuration for Vultr and other cloud providers.
 
 ## Tech Stack
 
-| Layer     | Technology                    |
-| --------- | ----------------------------- |
-| Programs  | Rust, Anchor                  |
-| Frontend  | Next.js, TypeScript, TailwindCSS |
-| Wallet    | @solana/wallet-adapter-react  |
-| Backend   | FastAPI, Python               |
-| Desktop   | Tauri (Rust + React)          |
+| Layer | Technology |
+| :--- | :--- |
+| Programs | Rust, Anchor |
+| Frontend | Next.js, TypeScript, TailwindCSS |
+| Wallet | @solana/wallet-adapter-react |
+| Backend | FastAPI, Python, LangChain |
+| Extension | React, Vite, VS Code Extension API |
 
 ## Project Structure
 
-```
+```text
 Poly-Cursor/
-├── programs/
-│   ├── prediction_market/   # Polymarket-style prediction markets
-│   ├── nft_tokenizer/      # NFT minting and fractionalization
-│   └── registry/           # Program and market indexing
-├── app/                    # Next.js frontend
-├── scripts/                # Local testing and deployment
-├── deployment/             # Dockerfile, docker-compose
-└── backend/                # FastAPI orchestration
-```
+├── extension/              # VS Code / Cursor extension frontend
+├── backend/                # FastAPI orchestration and AI agents
+├── programs/               # Generated Rust/Anchor smart contracts
+├── app/                    # Generated Next.js frontend
+├── scripts/                # Local testing and deployment scripts
+└── deployment/             # Dockerfile, docker-compose
 
-## Getting Started
+Prerequisites
+Rust and Anchor
 
-### Prerequisites
+Node.js 18+
 
-- [Rust](https://rustup.rs/) and [Anchor](https://www.anchor-lang.com/)
-- [Node.js](https://nodejs.org/) 18+
-- [Solana CLI](https://docs.solana.com/cli/install-solana-cli-tools)
+Python 3.10+
 
-### Local Development
+Solana CLI
 
-```bash
-# Start local validator
-./scripts/local/start-validator.sh
+# Start the FastAPI Orchestrator
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
 
-# Deploy programs
-./scripts/deploy/deploy-all.sh --cluster localnet
+# Run the Extension in Development Mode
+cd ../extension
+npm install
+npm run watch
 
-# Run frontend
-cd app && npm install && npm run dev
-```
-
-### Docker (Vultr)
-
-```bash
 cd deployment && docker-compose up -d
-```
 
-## Development
+# Create a .env in the backend directory backend
 
-- **Linux Mint** — Scripts and paths are optimized for Linux Mint compatibility
-- **Code quality** — Clean, modular, and heavily commented code
-- **Smart contracts** — Latest Anchor framework patterns
-- **Web3** — @solana/wallet-adapter-react for all frontend integrations
+OPENAI_API_KEY=your_openai_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
+PINECONE_API_KEY=your_vector_db_key
+ENVIRONMENT=development
+ALLOWED_ORIGINS=vscode-webview://*
 
-## License
+Development
+Environment: Scripts and paths are optimized for Linux Mint compatibility.
 
-MIT
+Code Quality: Clean, modular, and heavily commented code with strict TypeScript typing.
+
+Smart Contracts: Implements the latest Anchor framework patterns and secure PDA derivations.
+
+Web3: Utilizes @solana/wallet-adapter-react for all frontend integrations.
+
+Author
+Zayaan Bhanwadia - First-Year Computer Science Co-op Student at the University of Toronto Scarborough
