@@ -1,9 +1,9 @@
-import { ChatInterface } from "./components/ChatInterface";
+import { Chat } from "./components/Chat";
 
 export function App(): JSX.Element {
   return (
     <div className="h-full min-h-[320px]">
-      <ChatInterface />
+      <Chat />
     </div>
   );
 }
