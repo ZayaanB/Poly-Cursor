@@ -9,6 +9,8 @@ import {
 } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
+import { BentoFeatures } from "./BentoFeatures";
+import { FeatureMarquee } from "./FeatureMarquee";
 import { MagneticCta } from "./MagneticCta";
 
 const HeroCanvas = dynamic(
@@ -47,8 +49,9 @@ export function Landing() {
   const headlineOpacity = useTransform(scrollYProgress, [0.2, 0.45], [1, 0]);
 
   return (
-    <div ref={containerRef} className="relative min-h-[220vh]">
-      <section className="sticky top-0 h-screen w-full overflow-hidden border-b border-white/10">
+    <div className="relative">
+      <div ref={containerRef} className="relative min-h-[220vh]">
+        <section className="sticky top-0 h-screen w-full overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 z-0">
           <HeroCanvas scrollProgress={rotationSync} />
         </div>
@@ -93,7 +96,12 @@ export function Landing() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      </div>
+
+      <BentoFeatures />
+
+      <FeatureMarquee />
 
       <section className="border-t border-white/10 bg-brutal-charcoal px-4 py-24 md:px-10">
         <div className="mx-auto max-w-3xl">
