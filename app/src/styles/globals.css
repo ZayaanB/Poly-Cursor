@@ -6,7 +6,6 @@
   color-scheme: dark;
 }
 
-html,
-body {
-  @apply min-h-screen bg-surface text-zinc-100 antialiased;
+html {
+  @apply antialiased;
 }

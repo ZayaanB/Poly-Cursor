@@ -44,8 +44,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    // wallet-adapter-react types target React 19; project uses React 18
-    // @ts-expect-error ConnectionProvider JSX type mismatch
     <ConnectionProvider endpoint={endpoint}>
       <SolanaWalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>{children}</WalletModalProvider>

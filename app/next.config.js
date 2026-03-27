@@ -4,6 +4,7 @@ const path = require("path");
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
+  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
